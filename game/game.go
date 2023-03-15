@@ -11,11 +11,18 @@ import (
 	"golang.org/x/image/font/opentype"
 )
 
+const (
+	screenWidth  = 640
+	screenHeight = 480
+)
+
 var (
 	bgColor   = color.RGBA{200, 200, 200, 255}
 	textColor = color.Black
 	baseFont  font.Face
 )
+
+var spriteManager = NewSpriteManager(screenWidth, screenHeight)
 
 func init() {
 	tt, err := opentype.Parse(fonts.PressStart2P_ttf)
@@ -38,6 +45,8 @@ func init() {
 type Game struct{}
 
 func (g *Game) Update() error {
+	spriteManager.Update()
+
 	return nil
 }
 
@@ -45,8 +54,10 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	screen.Fill(bgColor)
 
 	text.Draw(screen, "Hello, World!", baseFont, 20, 40, textColor)
+
+	spriteManager.Draw(screen)
 }
 
-func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
-	return 640, 480
+func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
+	return screenWidth, screenHeight
 }
