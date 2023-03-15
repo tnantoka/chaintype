@@ -5,7 +5,9 @@ import (
 	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/examples/resources/fonts"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2/text"
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/opentype"
@@ -21,8 +23,6 @@ var (
 	textColor = color.Black
 	baseFont  font.Face
 )
-
-var spriteManager = NewSpriteManager(screenWidth, screenHeight)
 
 func init() {
 	tt, err := opentype.Parse(fonts.PressStart2P_ttf)
@@ -42,10 +42,28 @@ func init() {
 	}
 }
 
-type Game struct{}
+type Game struct {
+	spriteManager *SpriteManager
+	input         string
+}
+
+func NewGame() *Game {
+	return &Game{
+		spriteManager: NewSpriteManager(screenWidth, screenHeight),
+	}
+}
 
 func (g *Game) Update() error {
-	spriteManager.Update()
+	g.spriteManager.Update()
+
+	for k := ebiten.Key(0); k <= ebiten.KeyMax; k++ {
+		if inpututil.IsKeyJustPressed(k) {
+			s := k.String()
+			if len(s) == 1 {
+				g.input += s
+			}
+		}
+	}
 
 	return nil
 }
@@ -55,7 +73,9 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	text.Draw(screen, "Hello, World!", baseFont, 20, 40, textColor)
 
-	spriteManager.Draw(screen)
+	ebitenutil.DebugPrint(screen, g.input)
+
+	g.spriteManager.Draw(screen)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
