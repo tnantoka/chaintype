@@ -21,7 +21,7 @@ func (sm *SceneManager) Update() {
 	switch s := sm.currentScene.(type) {
 	case *TitleScene:
 		if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
-			sm.currentScene = &PlayScene{Screen{screenWidth, screenHeight}, NewSpriteManager(sm.screenWidth, sm.screenHeight), "", false}
+			sm.currentScene = NewPlayScene(Screen{screenWidth, screenHeight})
 		}
 	case *PlayScene:
 		if s.isGameOver {

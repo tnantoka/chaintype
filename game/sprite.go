@@ -122,18 +122,38 @@ func init() {
 	}
 }
 
+type Anchor int
+
+const (
+	AnchorLeftTop Anchor = iota
+	AnchorCenterMiddle
+)
+
 type TextSprite struct {
 	position Position
 	fontSize FontSize
 	color    color.Color
 	text     string
+	anchor   Anchor
 }
 
 func (s *TextSprite) Update() {
 }
 
 func (s *TextSprite) Draw(screen *ebiten.Image) {
-	x := int(s.position.x - float64(font.MeasureString(s.fontSize.Font(), s.text).Round())*0.5)
-	y := int(s.position.y + s.fontSize.Raw()*0.5)
+	x := 0
+	switch s.anchor {
+	case AnchorLeftTop:
+		x = int(s.position.x)
+	case AnchorCenterMiddle:
+		x = int(s.position.x - float64(font.MeasureString(s.fontSize.Font(), s.text).Round())*0.5)
+	}
+	y := 0
+	switch s.anchor {
+	case AnchorLeftTop:
+		y = int(s.position.y + s.fontSize.Raw())
+	case AnchorCenterMiddle:
+		y = int(s.position.y + s.fontSize.Raw()*0.5)
+	}
 	text.Draw(screen, s.text, s.fontSize.Font(), x, y, s.color)
 }

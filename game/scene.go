@@ -39,6 +39,7 @@ func (s *TitleScene) Draw(screen *ebiten.Image) {
 		largeFontSize,
 		textColor,
 		"Chaintype",
+		AnchorCenterMiddle,
 	}
 	title.Draw(screen)
 
@@ -47,6 +48,7 @@ func (s *TitleScene) Draw(screen *ebiten.Image) {
 		baseFontSize,
 		textColor,
 		"Press space to start",
+		AnchorCenterMiddle,
 	}
 	start.Draw(screen)
 }
@@ -68,6 +70,7 @@ func (s *GameOverScene) Draw(screen *ebiten.Image) {
 		largeFontSize,
 		textColor,
 		"Game over",
+		AnchorCenterMiddle,
 	}
 	gameOver.Draw(screen)
 }
