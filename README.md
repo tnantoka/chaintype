@@ -1,4 +1,4 @@
-# Chaiping
+# Chaintype
 
 ## Development
 

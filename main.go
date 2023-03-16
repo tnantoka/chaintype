@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/tnantoka/chaiping/game"
+	"github.com/tnantoka/chaintype/game"
 )
 
 func main() {

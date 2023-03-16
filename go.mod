@@ -1,4 +1,4 @@
-module github.com/tnantoka/chaiping
+module github.com/tnantoka/chaintype
 
 go 1.20
 

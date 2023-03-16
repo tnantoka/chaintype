@@ -2,9 +2,14 @@ package game
 
 import (
 	"image/color"
+	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/hajimehoshi/ebiten/v2/examples/resources/fonts"
+	"github.com/hajimehoshi/ebiten/v2/text"
+	"golang.org/x/image/font"
+	"golang.org/x/image/font/opentype"
 )
 
 type Sprite interface {
@@ -62,4 +67,73 @@ func (s *CircleSprite) Draw(screen *ebiten.Image) {
 
 func (s *CircleSprite) Frame() Frame {
 	return Frame{s.position.x, s.position.y, s.r * 2, s.r * 2}
+}
+
+type FontSize float64
+
+const (
+	baseFontSize  FontSize = 16
+	largeFontSize FontSize = 32
+)
+
+func (fs FontSize) Raw() float64 {
+	return float64(fs)
+}
+
+func (fs FontSize) Font() font.Face {
+	switch fs {
+	case baseFontSize:
+		return baseFont
+	case largeFontSize:
+		return largeFont
+	}
+	return nil
+}
+
+var (
+	baseFont  font.Face
+	largeFont font.Face
+)
+
+func init() {
+	tt, err := opentype.Parse(fonts.PressStart2P_ttf)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	const dpi = 72
+
+	baseFont, err = opentype.NewFace(tt, &opentype.FaceOptions{
+		Size:    baseFontSize.Raw(),
+		DPI:     dpi,
+		Hinting: font.HintingFull,
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	largeFont, err = opentype.NewFace(tt, &opentype.FaceOptions{
+		Size:    largeFontSize.Raw(),
+		DPI:     dpi,
+		Hinting: font.HintingFull,
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+type TextSprite struct {
+	position Position
+	fontSize FontSize
+	color    color.Color
+	text     string
+}
+
+func (s *TextSprite) Update() {
+}
+
+func (s *TextSprite) Draw(screen *ebiten.Image) {
+	x := int(s.position.x - float64(font.MeasureString(s.fontSize.Font(), s.text).Round())*0.5)
+	y := int(s.position.y + s.fontSize.Raw()*0.5)
+	text.Draw(screen, s.text, s.fontSize.Font(), x, y, s.color)
 }

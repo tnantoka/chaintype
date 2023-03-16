@@ -34,14 +34,14 @@ func (sm *SpriteManager) Update() {
 		switch s := sprite.(type) {
 		case *RectSprite:
 			s.position.x -= 1
-			if s.position.x < sm.minX(s) {
-				s.position.x = sm.maxX(s)
-			}
+			//if s.position.x < sm.minX(s) {
+			//	s.position.x = sm.maxX(s)
+			//}
 		case *CircleSprite:
 			s.position.x -= 1
-			if s.position.x < sm.minX(s) {
-				s.position.x = sm.maxX(s)
-			}
+			//if s.position.x < sm.minX(s) {
+			//	s.position.x = sm.maxX(s)
+			//}
 		}
 	}
 }
