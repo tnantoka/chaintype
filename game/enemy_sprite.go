@@ -49,12 +49,20 @@ func (s *EnemySprite) Frame() Frame {
 	return Frame{s.position.x, s.position.y, float64(font.MeasureString(s.fontSize.Font(), s.text).Round()), s.fontSize.Raw()}
 }
 
-func (s *EnemySprite) Input(str string) {
+func (s *EnemySprite) Input(str string) bool {
 	if strings.ToUpper(string(s.text[s.cursor])) == str {
 		s.cursor++
 
 		if s.cursor >= len(s.text) {
 			s.isDead = true
 		}
+
+		return true
 	}
+
+	return false
+}
+
+func (s *EnemySprite) KnockBack() {
+	s.isDead = true
 }

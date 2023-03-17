@@ -1,16 +1,19 @@
 package game
 
 import (
+	"image/color"
 	"math/rand"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
-	"github.com/hajimehoshi/ebiten/v2/text"
 )
 
 const (
 	maxEnemies = 10
+)
+
+var (
+	wallColor = color.RGBA{200, 200, 200, 255}
 )
 
 type PlayScene struct {
@@ -20,10 +23,11 @@ type PlayScene struct {
 	enemies       []*EnemySprite
 	frameCount    int
 	enemyInterval int
+	wallCount     int
 }
 
 func NewPlayScene(s Screen) *PlayScene {
-	return &PlayScene{s, "", false, []*EnemySprite{}, 0, 100}
+	return &PlayScene{s, "", false, []*EnemySprite{}, 0, 100, 3}
 }
 
 func (s *PlayScene) Update() {
@@ -44,7 +48,9 @@ func (s *PlayScene) Update() {
 				s.input += str
 
 				for _, enemy := range s.enemies {
-					enemy.Input(str)
+					if enemy.Input(str) {
+						break
+					}
 				}
 			}
 		}
@@ -62,8 +68,13 @@ func (s *PlayScene) Update() {
 
 	for _, enemy := range s.enemies {
 		enemy.Update()
-		if enemy.Frame().x < 1 {
-			s.isGameOver = true
+		if enemy.Frame().x < (float64(s.wallCount)-1)*20+10 {
+			s.wallCount--
+			enemy.KnockBack()
+
+			if s.wallCount < 0 {
+				s.isGameOver = true
+			}
 		}
 	}
 }
@@ -71,11 +82,12 @@ func (s *PlayScene) Update() {
 func (s *PlayScene) Draw(screen *ebiten.Image) {
 	screen.Fill(bgColor)
 
-	text.Draw(screen, "Hello, World!", baseFont, 20, 40, textColor)
-
-	ebitenutil.DebugPrint(screen, s.input)
-
 	for _, enemy := range s.enemies {
 		enemy.Draw(screen)
+	}
+
+	for i := 0; i < s.wallCount; i++ {
+		wall := RectSprite{Position{float64(i) * 20, 0}, Size{10, s.screen.h}, wallColor}
+		wall.Draw(screen)
 	}
 }
