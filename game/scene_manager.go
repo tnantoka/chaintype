@@ -25,7 +25,7 @@ func (sm *SceneManager) Update() {
 		}
 	case *PlayScene:
 		if s.isGameOver {
-			sm.currentScene = &GameOverScene{Screen{screenWidth, screenHeight}}
+			sm.currentScene = &GameOverScene{Screen{screenWidth, screenHeight}, s.score}
 		}
 	case *GameOverScene:
 		if inpututil.IsKeyJustPressed(ebiten.KeySpace) {

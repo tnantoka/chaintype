@@ -1,6 +1,7 @@
 package game
 
 import (
+	"fmt"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -55,6 +56,7 @@ func (s *TitleScene) Draw(screen *ebiten.Image) {
 
 type GameOverScene struct {
 	screen Screen
+	score  int
 }
 
 func (s *GameOverScene) Update() {
@@ -66,13 +68,22 @@ func (s *GameOverScene) Draw(screen *ebiten.Image) {
 	grid(screen, s.screen)
 
 	gameOver := TextSprite{
-		Position{s.screen.w * 0.5, s.screen.h * 0.5},
+		Position{s.screen.w * 0.5, s.screen.h * 0.4},
 		largeFontSize,
 		textColor,
 		"Game over",
 		AnchorCenterMiddle,
 	}
 	gameOver.Draw(screen)
+
+	score := TextSprite{
+		Position{s.screen.w * 0.5, s.screen.h * 0.6},
+		baseFontSize,
+		textColor,
+		fmt.Sprintf("Score: %d", s.score),
+		AnchorCenterMiddle,
+	}
+	score.Draw(screen)
 }
 
 func grid(screen *ebiten.Image, s Screen) {

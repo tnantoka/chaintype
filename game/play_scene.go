@@ -1,6 +1,7 @@
 package game
 
 import (
+	"fmt"
 	"image/color"
 	"math/rand"
 
@@ -24,10 +25,11 @@ type PlayScene struct {
 	frameCount    int
 	enemyInterval int
 	wallCount     int
+	score         int
 }
 
 func NewPlayScene(s Screen) *PlayScene {
-	return &PlayScene{s, "", false, []*EnemySprite{}, 0, 100, 3}
+	return &PlayScene{s, "", false, []*EnemySprite{}, 0, 100, 3, 0}
 }
 
 func (s *PlayScene) Update() {
@@ -58,7 +60,9 @@ func (s *PlayScene) Update() {
 		s.enemies = func() []*EnemySprite {
 			var result []*EnemySprite
 			for _, enemy := range s.enemies {
-				if !enemy.isDead {
+				if enemy.isDead {
+					s.score++
+				} else {
 					result = append(result, enemy)
 				}
 			}
@@ -90,4 +94,7 @@ func (s *PlayScene) Draw(screen *ebiten.Image) {
 		wall := RectSprite{Position{float64(i) * 20, 0}, Size{10, s.screen.h}, wallColor}
 		wall.Draw(screen)
 	}
+
+	score := TextSprite{Position{s.screen.w - 5, 5}, baseFontSize, textColor, fmt.Sprintf("Score: %d", s.score), AnchorRightTop}
+	score.Draw(screen)
 }

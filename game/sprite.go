@@ -126,6 +126,7 @@ type Anchor int
 
 const (
 	AnchorLeftTop Anchor = iota
+	AnchorRightTop
 	AnchorCenterMiddle
 )
 
@@ -145,12 +146,14 @@ func (s *TextSprite) Draw(screen *ebiten.Image) {
 	switch s.anchor {
 	case AnchorLeftTop:
 		x = int(s.position.x)
+	case AnchorRightTop:
+		x = int(s.position.x - float64(font.MeasureString(s.fontSize.Font(), s.text).Round()))
 	case AnchorCenterMiddle:
 		x = int(s.position.x - float64(font.MeasureString(s.fontSize.Font(), s.text).Round())*0.5)
 	}
 	y := 0
 	switch s.anchor {
-	case AnchorLeftTop:
+	case AnchorLeftTop, AnchorRightTop:
 		y = int(s.position.y + s.fontSize.Raw())
 	case AnchorCenterMiddle:
 		y = int(s.position.y + s.fontSize.Raw()*0.5)
