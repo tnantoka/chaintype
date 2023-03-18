@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	maxEnemies = 10
+	maxEnemies = 4
 )
 
 var (
@@ -21,6 +21,7 @@ type PlayScene struct {
 	input         string
 	isGameOver    bool
 	enemies       []*EnemySprite
+	chains        []*ChainSprite
 	frameCount    int
 	enemyInterval int
 	wallCount     int
@@ -28,7 +29,7 @@ type PlayScene struct {
 }
 
 func NewPlayScene(s Screen) *PlayScene {
-	return &PlayScene{s, "", false, []*EnemySprite{}, 0, 100, 3, 0}
+	return &PlayScene{s, "", false, []*EnemySprite{}, []*ChainSprite{}, 0, 40, 3, 0}
 }
 
 func (s *PlayScene) Update() {
@@ -59,6 +60,9 @@ func (s *PlayScene) Update() {
 			for _, enemy := range s.enemies {
 				if enemy.isDead {
 					s.score++
+
+					chain := NewChainSprite(enemy.position.x+enemy.Frame().w*0.5, enemy.position.y)
+					s.chains = append(s.chains, chain)
 				} else {
 					result = append(result, enemy)
 				}
@@ -78,6 +82,27 @@ func (s *PlayScene) Update() {
 			}
 		}
 	}
+
+	s.chains = func() []*ChainSprite {
+		var result []*ChainSprite
+		for _, chain := range s.chains {
+			if !chain.isDead {
+				result = append(result, chain)
+			}
+		}
+		return result
+	}()
+
+	for _, chain := range s.chains {
+		chain.Update()
+
+		for _, enemy := range s.enemies {
+			if Intersect(chain, enemy) {
+				enemy.isDead = true
+				chain.isDead = true
+			}
+		}
+	}
 }
 
 func (s *PlayScene) Draw(screen *ebiten.Image) {
@@ -85,6 +110,10 @@ func (s *PlayScene) Draw(screen *ebiten.Image) {
 
 	for _, enemy := range s.enemies {
 		enemy.Draw(screen)
+	}
+
+	for _, chain := range s.chains {
+		chain.Draw(screen)
 	}
 
 	for i := 0; i < s.wallCount; i++ {

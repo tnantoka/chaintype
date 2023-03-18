@@ -164,3 +164,9 @@ func (s *TextSprite) Draw(screen *ebiten.Image) {
 func (s *TextSprite) Frame() Frame {
 	return Frame{s.position.x, s.position.y, float64(font.MeasureString(s.fontSize.Font(), s.text).Round()), s.fontSize.Raw()}
 }
+
+func Intersect(a Sprite, b Sprite) bool {
+	ax, ay, aw, ah := a.Frame().x, a.Frame().y, a.Frame().w, a.Frame().h
+	bx, by, bw, bh := b.Frame().x, b.Frame().y, b.Frame().w, b.Frame().h
+	return ax < bx+bw && ax+aw > bx && ay < by+bh && ay+ah > by
+}
