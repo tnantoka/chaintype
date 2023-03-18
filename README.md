@@ -1,5 +1,11 @@
 # Chaintype
 
+A small typing game inspired by hanitype, made with ebitengine.
+
+https://chaintype.pages.dev/
+
+![](/docs/chaintype.gif)
+
 ## Development
 
 ```
