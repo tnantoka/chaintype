@@ -3,6 +3,7 @@ package game
 import (
 	"fmt"
 	"image/color"
+	"sort"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -70,6 +71,11 @@ func (s *PlayScene) spawnEnemies() {
 }
 
 func (s *PlayScene) processInput() {
+	sorted := append([]*EnemySprite{}, s.enemies...)
+	sort.Slice(sorted, func(i, j int) bool {
+		return s.enemies[i].cursor > s.enemies[j].cursor
+	})
+
 	s.input = ""
 	for k := ebiten.Key(0); k <= ebiten.KeyMax; k++ {
 		if inpututil.IsKeyJustPressed(k) {
@@ -77,7 +83,7 @@ func (s *PlayScene) processInput() {
 			if len(str) == 1 {
 				s.input += str
 
-				for _, enemy := range s.enemies {
+				for _, enemy := range sorted {
 					if enemy.Input(str) {
 						break
 					}
