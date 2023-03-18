@@ -20,6 +20,7 @@ $ curl localhost:8080/_notify
 - https://github.com/DMA902/fallingwords
 - https://www.kenney.nl/assets/alien-ufo-pack
 - https://www.kenney.nl/assets/space-shooter-extension
+- https://progeigo.org/learning/essential-words-600-plus/#basic-300
 
 ## Author
 

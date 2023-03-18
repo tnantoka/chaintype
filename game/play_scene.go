@@ -3,6 +3,7 @@ package game
 import (
 	"fmt"
 	"image/color"
+	"sort"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -103,6 +104,9 @@ func (s *PlayScene) filterDeadSprites() {
 		}
 		return result
 	}()
+	sort.Slice(s.enemies, func(i, j int) bool {
+		return s.enemies[i].cursor > s.enemies[j].cursor
+	})
 
 	s.chains = func() []*ChainSprite {
 		var result []*ChainSprite
