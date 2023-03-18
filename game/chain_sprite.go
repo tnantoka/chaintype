@@ -7,7 +7,10 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
-const chainImageSize float64 = 15
+const (
+	chainImageSize = 15
+	chainSpeed     = 8
+)
 
 type ChainSprite struct {
 	position Position
@@ -25,7 +28,7 @@ func NewChainSprite(x float64, y float64) *ChainSprite {
 }
 
 func (s *ChainSprite) Update() {
-	s.position.y += 8
+	s.position.y += chainSpeed
 }
 
 func (s *ChainSprite) Draw(screen *ebiten.Image) {

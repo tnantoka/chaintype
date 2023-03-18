@@ -4,6 +4,7 @@ import (
 	"embed"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 const (
@@ -15,23 +16,36 @@ const (
 var imagesFS embed.FS
 
 type Game struct {
-	sceneManager *SceneManager
+	currentScene Scene
 }
 
 func NewGame() *Game {
-	return &Game{
-		sceneManager: NewSceneManager(screenWidth, screenHeight),
-	}
+	return &Game{&TitleScene{Screen{screenWidth, screenHeight}}}
 }
 
 func (g *Game) Update() error {
-	g.sceneManager.Update()
+	g.currentScene.Update()
+
+	switch s := g.currentScene.(type) {
+	case *TitleScene:
+		if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
+			g.currentScene = NewPlayScene(Screen{screenWidth, screenHeight})
+		}
+	case *PlayScene:
+		if s.isGameOver {
+			g.currentScene = &GameOverScene{Screen{screenWidth, screenHeight}, s.score}
+		}
+	case *GameOverScene:
+		if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
+			g.currentScene = &TitleScene{Screen{screenWidth, screenHeight}}
+		}
+	}
 
 	return nil
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	g.sceneManager.Draw(screen)
+	g.currentScene.Draw(screen)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {

@@ -12,17 +12,22 @@ import (
 	"golang.org/x/image/font"
 )
 
-const enemyImageSize float64 = 50
+const (
+	enemyImageSize = 50
+	enemySpeed     = 1
+)
 
-var words = []string{
-	"break", "default", "func", "interface", "select",
-	"case", "defer", "go", "map", "struct",
-	"chan", "else", "goto", "package", "switch",
-	"const", "fallthrough", "if", "range", "type",
-	"continue", "for", "import", "return", "var",
-}
-
-var enemyBgColor = color.RGBA{100, 100, 100, 255}
+var (
+	words = []string{
+		"break", "default", "func", "interface", "select",
+		"case", "defer", "go", "map", "struct",
+		"chan", "else", "goto", "package", "switch",
+		"const", "fallthrough", "if", "range", "type",
+		"continue", "for", "import", "return", "var",
+	}
+	enemyBgColor    = color.RGBA{100, 100, 100, 255}
+	enemyMutedColor = color.RGBA{150, 150, 150, 255}
+)
 
 type EnemySprite struct {
 	position Position
@@ -46,7 +51,7 @@ func NewEnemySprite(screenWidth float64, screenHeight float64) *EnemySprite {
 }
 
 func (s *EnemySprite) Update() {
-	s.position.x -= 1
+	s.position.x -= enemySpeed
 }
 
 func (s *EnemySprite) Draw(screen *ebiten.Image) {
@@ -61,7 +66,7 @@ func (s *EnemySprite) Draw(screen *ebiten.Image) {
 
 	textSprite.Draw(screen)
 
-	textSprite = TextSprite{s.position, s.fontSize, color.RGBA{200, 200, 200, 255}, s.text[:s.cursor], AnchorLeftTop}
+	textSprite = TextSprite{s.position, s.fontSize, enemyMutedColor, s.text[:s.cursor], AnchorLeftTop}
 	textSprite.Draw(screen)
 }
 
