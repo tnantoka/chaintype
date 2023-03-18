@@ -1,6 +1,8 @@
 package game
 
 import (
+	"embed"
+
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -8,6 +10,9 @@ const (
 	screenWidth  = 640
 	screenHeight = 480
 )
+
+//go:embed images/*
+var imagesFS embed.FS
 
 type Game struct {
 	sceneManager *SceneManager

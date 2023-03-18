@@ -1,13 +1,18 @@
 package game
 
 import (
+	"fmt"
 	"image/color"
+	"log"
 	"math/rand"
 	"strings"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"golang.org/x/image/font"
 )
+
+const enemyImageSize float64 = 50
 
 var words = []string{
 	"break", "default", "func", "interface", "select",
@@ -17,17 +22,27 @@ var words = []string{
 	"continue", "for", "import", "return", "var",
 }
 
+var enemyBgColor = color.RGBA{100, 100, 100, 255}
+
 type EnemySprite struct {
 	position Position
 	fontSize FontSize
-	color    color.Color
 	text     string
 	cursor   int
 	isDead   bool
+	img      *ebiten.Image
 }
 
-func NewEnemySprite() *EnemySprite {
-	return &EnemySprite{fontSize: baseFontSize, color: color.RGBA{255, 0, 0, 255}, text: words[rand.Intn(len(words))]}
+func NewEnemySprite(screenWidth float64, screenHeight float64) *EnemySprite {
+	x := screenWidth
+	y := rand.Float64()*(screenHeight-baseFontSize.Raw()-enemyImageSize) + enemyImageSize
+
+	img, _, err := ebitenutil.NewImageFromFileSystem(imagesFS, fmt.Sprintf("images/enemy_%d.png", rand.Intn(4)))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return &EnemySprite{position: Position{x, y}, fontSize: baseFontSize, text: words[rand.Intn(len(words))], img: img}
 }
 
 func (s *EnemySprite) Update() {
@@ -35,10 +50,15 @@ func (s *EnemySprite) Update() {
 }
 
 func (s *EnemySprite) Draw(screen *ebiten.Image) {
-	rectSprite := RectSprite{s.position, Size{s.Frame().w, s.Frame().h}, s.color}
+	rectSprite := RectSprite{s.position, Size{s.Frame().w, s.Frame().h}, enemyBgColor}
 	rectSprite.Draw(screen)
 
 	textSprite := TextSprite{s.position, s.fontSize, color.White, s.text, AnchorLeftTop}
+
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Translate(s.position.x+textSprite.Frame().w*0.5-enemyImageSize*0.5, s.position.y-enemyImageSize)
+	screen.DrawImage(s.img, op)
+
 	textSprite.Draw(screen)
 
 	textSprite = TextSprite{s.position, s.fontSize, color.RGBA{200, 200, 200, 255}, s.text[:s.cursor], AnchorLeftTop}

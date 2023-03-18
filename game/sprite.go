@@ -147,16 +147,20 @@ func (s *TextSprite) Draw(screen *ebiten.Image) {
 	case AnchorLeftTop:
 		x = int(s.position.x)
 	case AnchorRightTop:
-		x = int(s.position.x - float64(font.MeasureString(s.fontSize.Font(), s.text).Round()))
+		x = int(s.position.x - s.Frame().w)
 	case AnchorCenterMiddle:
-		x = int(s.position.x - float64(font.MeasureString(s.fontSize.Font(), s.text).Round())*0.5)
+		x = int(s.position.x - s.Frame().w*0.5)
 	}
 	y := 0
 	switch s.anchor {
 	case AnchorLeftTop, AnchorRightTop:
-		y = int(s.position.y + s.fontSize.Raw())
+		y = int(s.position.y + s.Frame().h)
 	case AnchorCenterMiddle:
-		y = int(s.position.y + s.fontSize.Raw()*0.5)
+		y = int(s.position.y + s.Frame().h*0.5)
 	}
 	text.Draw(screen, s.text, s.fontSize.Font(), x, y, s.color)
+}
+
+func (s *TextSprite) Frame() Frame {
+	return Frame{s.position.x, s.position.y, float64(font.MeasureString(s.fontSize.Font(), s.text).Round()), s.fontSize.Raw()}
 }

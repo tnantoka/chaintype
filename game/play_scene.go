@@ -3,7 +3,6 @@ package game
 import (
 	"fmt"
 	"image/color"
-	"math/rand"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -36,9 +35,7 @@ func (s *PlayScene) Update() {
 	s.frameCount++
 
 	if len(s.enemies) <= maxEnemies && s.frameCount%s.enemyInterval == 0 {
-		enemy := NewEnemySprite()
-		enemy.position.x = s.screen.w
-		enemy.position.y = rand.Float64() * (s.screen.h - enemy.Frame().h)
+		enemy := NewEnemySprite(s.screen.w, s.screen.h)
 		s.enemies = append(s.enemies, enemy)
 	}
 
