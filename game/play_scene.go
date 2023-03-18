@@ -3,7 +3,6 @@ package game
 import (
 	"fmt"
 	"image/color"
-	"sort"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -80,12 +79,6 @@ func (s *PlayScene) processInput() {
 
 				for _, enemy := range s.enemies {
 					if enemy.Input(str) {
-						if enemy.isDead {
-							s.score++
-
-							chain := NewChainSprite(enemy.position.x+enemy.Frame().w*0.5, enemy.position.y)
-							s.chains = append(s.chains, chain)
-						}
 						break
 					}
 				}
@@ -95,6 +88,15 @@ func (s *PlayScene) processInput() {
 }
 
 func (s *PlayScene) filterDeadSprites() {
+	for _, enemy := range s.enemies {
+		if enemy.isDead {
+			s.score++
+
+			chain := NewChainSprite(enemy.position.x+enemy.Frame().w*0.5, enemy.position.y)
+			s.chains = append(s.chains, chain)
+		}
+	}
+
 	s.enemies = func() []*EnemySprite {
 		var result []*EnemySprite
 		for _, enemy := range s.enemies {
@@ -104,9 +106,6 @@ func (s *PlayScene) filterDeadSprites() {
 		}
 		return result
 	}()
-	sort.Slice(s.enemies, func(i, j int) bool {
-		return s.enemies[i].cursor > s.enemies[j].cursor
-	})
 
 	s.chains = func() []*ChainSprite {
 		var result []*ChainSprite

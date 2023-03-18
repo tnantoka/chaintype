@@ -14,7 +14,6 @@ import (
 
 const (
 	enemyImageSize = 50
-	enemySpeed     = 1
 )
 
 var (
@@ -29,22 +28,24 @@ type EnemySprite struct {
 	cursor   int
 	isDead   bool
 	img      *ebiten.Image
+	speed    float64
 }
 
 func NewEnemySprite(screenWidth float64, screenHeight float64) *EnemySprite {
 	x := screenWidth
 	y := rand.Float64()*(screenHeight-baseFontSize.Raw()-enemyImageSize) + enemyImageSize
 
+	speed := rand.Float64()*1 + 0.5
+
 	img, _, err := ebitenutil.NewImageFromFileSystem(imagesFS, fmt.Sprintf("images/enemy_%d.png", rand.Intn(4)))
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	return &EnemySprite{position: Position{x, y}, fontSize: baseFontSize, text: words[rand.Intn(len(words))], img: img}
+	return &EnemySprite{position: Position{x, y}, fontSize: baseFontSize, text: words[rand.Intn(len(words))], img: img, speed: speed}
 }
 
 func (s *EnemySprite) Update() {
-	s.position.x -= enemySpeed
+	s.position.x -= s.speed
 }
 
 func (s *EnemySprite) Draw(screen *ebiten.Image) {
