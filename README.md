@@ -1,6 +1,6 @@
 # Chaintype
 
-A small typing game inspired by hanitype, made with ebitengine.
+A small typing game inspired by hanitype, made with [Ebitengine](https://ebitengine.org/).
 
 https://chaintype.pages.dev/
 
@@ -21,7 +21,6 @@ $ curl localhost:8080/_notify
 
 ## Acknowledgements
 
-- https://ebitengine.org/
 - http://www.yumekagaku.com/free_soft/hanitype.html
 - https://github.com/DMA902/fallingwords
 - https://www.kenney.nl/assets/alien-ufo-pack
